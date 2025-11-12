@@ -1,18 +1,29 @@
-export default function Container({children}){
+import dynamic from "next/dynamic";
+const Lottie = dynamic(() => import("react-lottie-player"), { ssr: false });
+import studyAnimation from "../public/lottie/education.json";
+
+export default function Container({ children }) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800">
-      <div className="w-full max-w-5xl grid md:grid-cols-2 gap-8 p-6">
-        <div className="hidden md:flex items-center justify-center">
-          <div className="card w-full">
+    <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat p-4" style={{ backgroundImage: "url('/background.jpg')" }}>
+      <div className="w-full max-w-6xl mx-auto flex justify-center">
+
+        <div className="bg-[#0b1b33]/60 backdrop-blur-xl rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.4)]w-full max-w-5xl grid md:grid-cols-2 overflow-hiddenborder border-white/10">
+          <div className="hidden md:flex flex-col items-center justify-center bg-[#0f223f]/80 p-10">
             <div className="flex items-center gap-3 mb-6">
-              <img src="/logo.svg" className="w-8 h-8" alt="logo"/>
-              <div className="text-2xl font-semibold text-brand">NexLearn</div>
+              <img src="/Logo.png" className="w-41 h-15" alt="logo" />
             </div>
-            <img src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?q=80&w=1200&auto=format&fit=crop" alt="" className="rounded-xl shadow w-full object-cover h-72"/>
-            <div className="mt-6 text-slate-600">Futuristic learning platform with secure OTP login and timed exams.</div>
+
+            <div className="w-80">
+              <Lottie loop play animationData={studyAnimation} style={{ width: 320, height: 320 }} />
+            </div>
+
+          </div>
+
+          <div className="bg-white p-10 flex items-center justify-center">
+            <div className="w-full max-w-md">{children}</div>
           </div>
         </div>
-        <div className="card">{children}</div>
+
       </div>
     </div>
   )

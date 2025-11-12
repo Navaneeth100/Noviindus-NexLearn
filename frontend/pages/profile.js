@@ -62,40 +62,99 @@ export default function Profile() {
   return (
     <>
       <Container>
-        <h1 className="text-xl font-semibold mb-4">Add Your Details</h1>
-        <form onSubmit={onFormSubmit} className="space-y-4">
+        <h1 className="text-2xl font-semibold text-slate-900 mb-6">Add Your Details</h1>
+        <form onSubmit={onFormSubmit} className="space-y-5">
+          <div className="flex flex-col items-center">
+            <label
+              htmlFor="profile-upload"
+              className="w-40 h-32 flex flex-col items-center justify-center 
+               border border-dashed border-slate-300 rounded-lg
+               text-slate-500 cursor-pointer hover:bg-slate-50/40 transition"
+            >
+              {preview ? (
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              ) : (
+                <>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="#6B7280"
+                    className="w-8 h-8"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 4.5v15m7.5-7.5h-15"
+                    />
+                  </svg>
 
-          <div>
-            <div className="label mb-1">Profile Image</div>
-
-            {preview && (
-              <img
-                src={preview}
-                alt="Preview"
-                className="mt-3 mb-2 w-32 h-32 object-cover rounded-xl border border-slate-300"
-              />
-            )}
-
+                  <span className="text-xs mt-1 text-slate-400">
+                    Add Your Profile picture
+                  </span>
+                </>
+              )}
+            </label>
             <input
+              id="profile-upload"
               type="file"
               accept="image/*"
               onChange={(e) => {
                 const file = e.target.files[0];
                 setImage(file);
-
-                if (file) {
-                  setPreview(URL.createObjectURL(file));
-                }
+                if (file) setPreview(URL.createObjectURL(file));
               }}
-              className="block"
+              className="hidden"
             />
           </div>
 
-          <div><div className="label mb-1">Name*</div><input className="input" value={name} onChange={e => setName(e.target.value)} required /></div>
-          <div><div className="label mb-1">Email</div><input className="input" type="email" value={email} onChange={e => setEmail(e.target.value)} required /></div>
-          <div><div className="label mb-1">Your Qualification*</div><input className="input" value={qualification} onChange={e => setQualification(e.target.value)} required /></div>
-          {error && <div className="text-red-600 text-sm">{error}</div>}
-          <button className="btn w-full bg-brand text-white" disabled={loading}>{loading ? 'Saving...' : 'Get Started'}</button>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Name*
+            </label>
+            <input
+              className="w-full border border-slate-300 rounded-lg px-3 py-3 outline-none text-black"
+              placeholder="Enter your Full Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Email
+            </label>
+            <input
+              type="email"
+              className="w-full border border-slate-300 rounded-lg px-3 py-3 outline-none text-black"
+              placeholder="Enter your Email Address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Your Qualification*
+            </label>
+            <input
+              className="w-full border border-slate-300 rounded-lg px-3 py-3 outline-none text-black"
+              placeholder="Enter your Qualification"
+              value={qualification}
+              onChange={(e) => setQualification(e.target.value)}
+              required
+            />
+          </div>
+
+          {error && (<div className="text-red-600 text-sm text-center">{error}</div>)}
+          <button className="w-full bg-[#0A182E] py-3 rounded-lg text-white text-sm font-semibold hover:bg-[#0d1d36] transition" disabled={loading}>{loading ? "Saving..." : "Get Started"}</button>
         </form>
       </Container>
     </>

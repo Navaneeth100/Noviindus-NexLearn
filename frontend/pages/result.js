@@ -9,7 +9,7 @@ export default function Result(){
       <div className='w-full max-w-2xl'>
         <div className='flex items-center justify-between mb-6'>
           <div className='flex items-center gap-2'><img src='/logo.svg' className='w-8 h-8'/><div className='font-semibold'>NexLearn</div></div>
-          <button className='btn' onClick={()=>router.push('/')}>Logout</button>
+          <button className='btn bg-[#0A182E] text-white hover:bg-[#112a4d]' onClick={()=>router.push('/')}>Logout</button>
         </div>
         <div className='card'>
           <div className='text-center'>
@@ -23,7 +23,7 @@ export default function Result(){
             <div className='flex items-center justify-between'><div className='text-slate-600'>Not Attended Questions:</div><div className='font-semibold'>{not_attended}</div></div>
           </div>
           <div className='mt-6 text-center'>
-            <button className='btn' onClick={()=>router.push('/instructions')}>Done</button>
+            <button className='btn bg-[#0A182E] text-white hover:bg-[#112a4d]' onClick={()=>router.push('/instructions')}>Done</button>
           </div>
         </div>
       </div>
