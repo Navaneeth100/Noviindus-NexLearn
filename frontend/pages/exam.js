@@ -14,6 +14,7 @@ export default function Exam() {
   const [idx, setIdx] = useState(0);
   const [showConfirm, setShowConfirm] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function Exam() {
   }
 
   const onFormSubmit = async () => {
+    setLoading(true);
     const payload = questions.map(q => ({
       question_id: q.question_id,
       selected_option_id: answers[q.question_id] ?? null
@@ -69,6 +71,8 @@ export default function Exam() {
 
     } catch (err) {
       console.log(err.response?.data || err.message);
+    } finally {
+      setLoading(false); 
     }
   }
 
@@ -155,15 +159,17 @@ export default function Exam() {
             <div className='flex gap-3 justify-center'>
               <button
                 className='btn bg-[#0A182E] text-white hover:bg-[#112a4d] px-5'
-                onClick={() => setShowConfirm(false)}
+                onClick={() => !loading && setShowConfirm(false)}
+                disabled={loading}
               >
                 Cancel
               </button>
               <button
-                className='btn bg-[#0A182E] text-white hover:bg-[#112a4d] px-6'
+                className={`btn px-6 ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#0A182E] text-white hover:bg-[#112a4d]'}`}
                 onClick={onFormSubmit}
+                disabled={loading}
               >
-                Submit Test
+                {loading ? 'Submitting...' : 'Submit Test'}
               </button>
             </div>
           </div>
