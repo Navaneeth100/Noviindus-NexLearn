@@ -15,7 +15,8 @@ export default function Profile() {
   const [qualification, setQualification] = useState('');
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const { save, token } = useAuth();
 
@@ -23,7 +24,8 @@ export default function Profile() {
   const onFormSubmit = async (e) => {
     e.preventDefault();
 
-    setError("");
+    setMessage('');
+    setIsSuccess(false);
     setLoading(true);
 
     try {
@@ -43,7 +45,14 @@ export default function Profile() {
 
       if (res.status === 200 && res.data?.success === true) {
         save(res.data.access_token, res.data.user);
-        router.push("/instructions");
+        setIsSuccess(true);
+        setMessage(res.data.message || "Profile created successfully!");
+        setTimeout(() => {
+          router.push("/instructions");
+        }, 1000);
+      } else {
+        setIsSuccess(false);
+        setMessage(res.data.message || "Profile creation failed.");
       }
     } catch (error) {
       const message =
@@ -51,7 +60,8 @@ export default function Profile() {
         error?.message ||
         "Something went wrong";
 
-      setError(message);
+      setIsSuccess(false);
+      setMessage(message);
       toast.error(message);
     } finally {
       setLoading(false);
@@ -153,7 +163,7 @@ export default function Profile() {
             />
           </div>
 
-          {error && (<div className="text-red-600 text-sm text-center">{error}</div>)}
+          {message && (<div className={`text-center text-sm font-medium ${isSuccess ? "text-green-600" : "text-red-600"}`}>{message}</div>)}
           <button className="w-full bg-[#0A182E] py-3 rounded-lg text-white text-sm font-semibold hover:bg-[#0d1d36] transition" disabled={loading}>{loading ? "Saving..." : "Get Started"}</button>
         </form>
       </Container>

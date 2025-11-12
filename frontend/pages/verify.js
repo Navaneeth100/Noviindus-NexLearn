@@ -10,14 +10,16 @@ export default function Verify() {
   const router = useRouter();
   const mobile = router.query.mobile || '';
   const [otp, setOtp] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const { save } = useAuth();
 
   const onFormSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setMessage('');
     setLoading(true);
+    setIsSuccess(false);
 
     try {
 
@@ -31,9 +33,13 @@ export default function Verify() {
       });
 
       if (res.data.success === true) {
+        setIsSuccess(true);
+        setMessage(res.data.message || "OTP verified successfully!");
         if (res.data.login === true) {
-          save(res.data.access_token, res.data.user || null);
-          router.push('/instructions');
+          setTimeout(() => {
+            save(res.data.access_token, res.data.user || null);
+            router.push('/instructions');
+          }, 1000)
         } else {
           router.push({
             pathname: '/profile',
@@ -41,11 +47,12 @@ export default function Verify() {
           });
         }
       } else {
-        setError(res.data.message || "OTP verification failed");
+        setIsSuccess(false);
+        setMessage(res.data.message || "OTP verification failed");
       }
 
     } catch (err) {
-      setError(err?.response?.data?.message || err.message);
+      setMessage(err?.response?.data?.message || err.message);
     }
 
     setLoading(false);
@@ -73,7 +80,7 @@ export default function Verify() {
           Resend code
         </p>
 
-        {error && (<div className="text-center text-red-600 text-sm font-medium">{error}</div>)}
+        {message && (<div className={`text-center text-sm font-medium mt-1 ${isSuccess ? 'text-green-600' : 'text-red-600'}`}>{message}</div>)}
         <button className="w-full bg-[#0A182E] text-white py-3 rounded-lg text-sm font-semibold hover:bg-[#0d1d36] transition" disabled={loading}>{loading ? 'Verifying...' : 'Get Started'}</button>
       </form>
     </Container>

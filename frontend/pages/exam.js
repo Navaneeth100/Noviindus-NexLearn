@@ -79,55 +79,55 @@ export default function Exam() {
   const seconds = data.total_time ? data.total_time * 60 : (questions.length * (data.time_for_each_question || 60));
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900">
-      <div className="max-w-6xl mx-auto p-4">
-        <div className='flex items-center justify-between mb-3'>
-          <div className='flex items-center gap-2'>
-            <img src='/logo.svg' className='w-8 h-8' alt='logo' />
-            <div className='font-semibold'>NexLearn</div>
+    <div className="min-h-screen bg-[#E9F3F6] text-[#0F1F39]">
+      <div className="w-full bg-white shadow-sm py-4 px-6 flex items-center justify-between relative">
+        <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-2">
+          <img src="/Logo1.png" className="w-25 h-12 object-contain" alt="logo" />
+        </div>
+        <button className="bg-[#0A7CA0] text-white text-sm px-5 py-2 rounded-md hover:bg-[#096a8c] ml-auto" onClick={() => router.push('/')}>Logout</button>
+      </div>
+
+      <div className='grid grid-cols-1 md:grid-cols-[1fr_400px] gap-4 p-5'>
+        <div className='card bg-white p-5 shadow'>
+          <div className='text-sm text-slate-500 text-right'>{String(idx + 1).padStart(2, '0')}/{questions.length}</div>
+          <div className='font-medium mb-3'>{q?.question}</div>
+          {q?.image && (<img src={q.image} className="rounded-md mb-3 w-full max-h-64 object-contain" />)}
+          <div className='space-y-2'>
+            {q?.options?.map(opt => (
+              <label key={opt.id} className={`flex items-center gap-2 border rounded-lg p-3 cursor-pointer transition ${answers[q.question_id] === opt.id ? 'bg-blue-50 border-blue-500' : 'hover:bg-slate-50'}`}>
+                <input type='radio' name={'q' + q.question_id} checked={answers[q.question_id] === opt.id} onChange={() => setAnswer(q.question_id, opt.id)} />
+                <span>{opt.option}</span>
+              </label>
+            ))}
           </div>
-          <Timer seconds={seconds} onEnd={onFormSubmit} onTick={setRemainingTime} />
-          <button className='btn bg-[#0A182E] text-white hover:bg-[#112a4d]' onClick={() => router.push('/')}>Logout</button>
+          <div className='flex gap-3 mt-5'>
+            <button className='btn !bg-purple-500 text-white hover:bg-[#112a4d]' onClick={() => markForReview(q.question_id)}>Mark for review</button>
+            <button className='btn flex-1 bg-[#0A182E] text-white hover:bg-[#112a4d]' onClick={() => setIdx(i => Math.max(0, i - 1))} disabled={idx === 0}>Previous</button>
+            <button className='btn flex-1 bg-[#0A182E] text-white hover:bg-[#112a4d]' onClick={() => setIdx(i => Math.min(questions.length - 1, i + 1))} disabled={idx === questions.length - 1}>Next</button>
+          </div>
         </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-[1fr_330px] gap-4'>
-          <div className='card bg-white p-5 shadow'>
-            <div className='text-sm text-slate-500 text-right'>{String(idx + 1).padStart(2, '0')}/{questions.length}</div>
-            <div className='font-medium mb-3'>{q?.question}</div>
-            {q?.image && (<img src={q.image} className="rounded-md mb-3 w-full max-h-64 object-contain" />)}
-            <div className='space-y-2'>
-              {q?.options?.map(opt => (
-                <label key={opt.id} className={`flex items-center gap-2 border rounded-lg p-3 cursor-pointer transition ${answers[q.question_id] === opt.id ? 'bg-blue-50 border-blue-500' : 'hover:bg-slate-50'}`}>
-                  <input type='radio' name={'q' + q.question_id} checked={answers[q.question_id] === opt.id} onChange={() => setAnswer(q.question_id, opt.id)} />
-                  <span>{opt.option}</span>
-                </label>
-              ))}
-            </div>
-            <div className='flex gap-3 mt-5'>
-              <button className='btn !bg-purple-500 text-white hover:bg-[#112a4d]' onClick={() => markForReview(q.question_id)}>Mark for review</button>
-              <button className='btn flex-1 bg-[#0A182E] text-white hover:bg-[#112a4d]' onClick={() => setIdx(i => Math.max(0, i - 1))} disabled={idx === 0}>Previous</button>
-              <button className='btn flex-1 bg-[#0A182E] text-white hover:bg-[#112a4d]' onClick={() => setIdx(i => Math.min(questions.length - 1, i + 1))} disabled={idx === questions.length - 1}>Next</button>
-            </div>
+        <div className='card bg-white p-5 shadow'>
+          <div className='flex items-center justify-between mb-5'>
+            <div className='font-semibold text-slate-800'>Question No. Sheet</div>
+            <div className='flex items-center gap-2 text-sm'>
+              <Timer seconds={seconds} onEnd={onFormSubmit} onTick={setRemainingTime} /></div>
           </div>
-
-          <div className='card bg-white p-5 shadow'>
-            <div className='font-semibold mb-2 text-slate-800'>Question No. Sheet</div>
-            <div className='grid grid-cols-10 gap-2'>
-              {questions.map((qq, i) => {
-                const st = status[qq.question_id];
-                const cls = st === 'answered' ? 'bg-green-500 text-white' : st === 'review' ? 'bg-purple-500 text-white' : answers[qq.question_id] == null ? 'bg-red-500 text-white' : 'bg-slate-200';
-                return (
-                  <button key={qq.question_id} className={'rounded-md text-sm py-2 transition ' + cls} onClick={() => setIdx(i)}>{i + 1}</button>
-                )
-              })}
-            </div>
-            <div className='mt-5 flex items-center gap-3 text-xs'>
-              <span className='badge bg-green-500 text-white'>Answered</span>
-              <span className='badge bg-purple-500 text-white'>Marked For Review</span>
-              <span className='badge bg-red-500 text-white'>Not Attended</span>
-            </div>
-            <button className='btn w-full mt-5 bg-[#0A182E] text-white hover:bg-[#112a4d]' onClick={() => setShowConfirm(true)}>Submit</button>
+          <div className='grid grid-cols-10 gap-2'>
+            {questions.map((qq, i) => {
+              const st = status[qq.question_id];
+              const cls = st === 'answered' ? 'bg-green-500 text-white' : st === 'review' ? 'bg-purple-500 text-white' : answers[qq.question_id] == null ? 'bg-red-500 text-white' : 'bg-slate-200';
+              return (
+                <button key={qq.question_id} className={'rounded-md text-sm py-2 transition ' + cls} onClick={() => setIdx(i)}>{i + 1}</button>
+              )
+            })}
           </div>
+          <div className='mt-5 flex items-center gap-3 text-xs'>
+            <span className='badge bg-green-500 text-white'>Answered</span>
+            <span className='badge bg-purple-500 text-white'>Marked For Review</span>
+            <span className='badge bg-red-500 text-white'>Not Attended</span>
+          </div>
+          <button className='btn w-full mt-5 bg-[#0A182E] text-white hover:bg-[#112a4d]' onClick={() => setShowConfirm(true)}>Submit</button>
         </div>
       </div>
 
